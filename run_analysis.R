@@ -41,5 +41,5 @@ X$subject <- rbind(subject_train,subject_test)$V1
 
 n<-melt(X,id.vars=c("subject","activity"))
 finalTidyData<-dcast(n,subject+activity~variable,mean)
-write.table(finalTidyData,file="K:\\coursera\\UCIHARDataset\\finalTidyData.txt")
+write.table(finalTidyData,file="./UCIHARDataset/finalTidyData.txt")
 
