@@ -8,38 +8,42 @@ require(reshape2)
 
 ## Read the data
 #Unix/Mac
-setwd("/banarasi/rprog")
-activity_labels<-read.table("./UCIHARDataset/activity_labels.txt")
-features<-read.table("./UCIHARDataset/features.txt",stringsAsFactors=FALSE)
-y_train<-read.table("./UCIHARDataset/train/y_train.txt")
-X_train<-read.table("./UCIHARDataset/train/X_train.txt")
-subject_train<-read.table("./UCIHARDataset/train/subject_train.txt")
-subject_test<-read.table("./UCIHARDataset/test/subject_test.txt")
-X_test<-read.table("./UCIHARDataset/test/X_test.txt")
-y_test<-read.table("./UCIHARDataset/test/y_test.txt")
-
-#Merges the training and the test sets to create one data set.
-
-X = rbind(X_train,X_test)
+readData<- function() { 
+  activity_labels<-read.table("activity_labels.txt",col.names=c("activityId", "activityName"))
+  features<-read.table("features.txt",stringsAsFactors=FALSE,col.names=c("featureID", "featureName"))
+  y_train<-read.table("./train/y_train.txt",col.names=c("activityId"))
+  X_train<-read.table("./train/X_train.txt",col.names=features$featureName)
+  subject_train<-read.table("./train/subject_train.txt",col.names=c("subject"))
+  subject_test<-read.table("./test/subject_test.txt",col.names=c("subject"))
+  X_test<-read.table("./test/X_test.txt",col.names=features$featureName)
+  y_test<-read.table("./test/y_test.txt",col.names=c("activityId"))
 
 
-#Extracts only the measurements on the mean and standard deviation for each measurement. 
+  #Merges the training and the test sets to create one data set.
+  
+  data = rbind(X_train,X_test)
+  
+  
+  #Extracts only the measurements on the mean and standard deviation for each measurement. 
+  
+#  colnames(X)<-c(features$V2)
+  data<-data[,grep("mean\\(\\)|std\\(\\)",features$featureName)]
+  
+  #Uses descriptive activity names to name the activities in the data set
+  #Appropriately labels the data set with descriptive activity names.
+  
+  y = rbind(y_train,y_test)
+  y<-merge(y,activity_labels,all=TRUE)
+  data$activityName<-y$activityName
+  data$subject <- rbind(subject_train,subject_test)$subject
+  data
+}
 
-colnames(X)<-c(features$V2)
-X<-X[,grep("mean\\(\\)|std\\(\\)",features$V2)]
-
-#Uses descriptive activity names to name the activities in the data set
-#Appropriately labels the data set with descriptive activity names.
-
-y = rbind(y_train,y_test)
-y<-merge(y,activity_labels,by.x="V1",by.y="V1",all=TRUE)
-X$activity<-y$V2
-X$subject <- rbind(subject_train,subject_test)$V1
-
+  
 #Creates a second, independent tidy data set with the average of each variable 
 #for each activity and each subject. 
-
-n<-melt(X,id.vars=c("subject","activity"))
-finalTidyData<-dcast(n,subject+activity~variable,mean)
-write.table(finalTidyData,file="./UCIHARDataset/finalTidyData.txt")
+data<-readData()
+melted_data<-melt(data,id.vars=c("subject","activityName"))
+finalTidyData<-dcast(melted_data,subject+activityName~variable,mean)
+write.table(finalTidyData,file="finalTidyData.txt")
 
