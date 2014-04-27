@@ -26,10 +26,13 @@ readData<- function() {
   
   #Extracts only the measurements on the mean and standard deviation for each measurement. 
   
-#  colnames(X)<-c(features$V2)
   data<-data[,grep("mean\\(\\)|std\\(\\)",features$featureName)]
-  
-  #Uses descriptive activity names to name the activities in the data set
+  ## remove ... at the end of variable names
+  cnames<-colnames(data)
+  cnames <- gsub("\\.+mean\\.+", cnames, replacement="Mean")
+  cnames <- gsub("\\.+std\\.+", cnames, replacement="Std")
+  colnames(data) <- cnames
+#Uses descriptive activity names to name the activities in the data set
   #Appropriately labels the data set with descriptive activity names.
   
   y = rbind(y_train,y_test)
