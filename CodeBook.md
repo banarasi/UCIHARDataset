@@ -15,22 +15,25 @@
  
 ### Transformations 
   Training and test data merged to create one dataset.
-  Extracts only the measurements on the mean and standard deviation for each measurement.
+  Extracted only the measurements on the mean and standard deviation for each measurement.
   Appropriately labeled the data set with descriptive activity names
 
  
 ### The Tidy dataset 
   Final Tidy dataset generated with the average of each variable for each activity and each subject. 
-  The Tidy dataset save as following file
+  The Tidy dataset saved as following file
  
 * finalTidyData.txt
 
 
 ## Code book
   Tidy dataset has 35 observation with 68 variables.
-  subject - catageorical non ordinal variable 
-  activityName - catageorical non ordinal variable
-  all other variables are Numeric Continous variables
+* subject - catageorical non ordinal variable 
+* activityName - catageorical non ordinal variable
+  
+all other variables are Numeric Continous variables
+
+List of features
 
 * 1 subject
 * 2	activityName
